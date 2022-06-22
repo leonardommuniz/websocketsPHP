@@ -11,15 +11,25 @@
     <input type="text">
 
     <script>
-        const socket = new WebSocket("ws://" + location.host + "/");
+        const ws = new WebSocket("ws://localhost:8080/");
 
         input = document.querySelector('input')
         output = document.querySelector('output')
 
-        socket.addEventListener('open', console.log)
+        ws.addEventListener('open', console.log)
+        ws.addEventListener('message', msg => {
+            const data = msg.data
+            if (msg.type == 'message') {
+                output.append('Outro: ' + data, document.createElement('br'))
+            } 
+        })
         input.addEventListener('keypress', e => {
             if (e.code == 'Enter') {
-                console.log(input.value)
+                output.append('Eu: ' + input.value, document.createElement('br'))
+
+                ws.send(input.value)
+
+                input.value = ''
             }
         })
     </script>
